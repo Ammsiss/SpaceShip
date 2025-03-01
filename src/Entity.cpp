@@ -1,29 +1,27 @@
 #include <cmath>
+#include <raylib.h>
 
-#include "Entity.h"
-#include "Aggregates.h"
-#include "Constants.h"
+#include "../cinc/Entity.h"
+
+#include "../inc/Aggregates.h"
+#include "../inc/Helper.h"
 
 Entity::Entity(Vec center, Vec dim, float angle, float turnSpeed, float speed)
-: m_center{ center },
-m_dim{ dim },
-m_angle{ angle }, 
-m_turnSpeed{ turnSpeed }, 
-m_speed{ speed},
-m_lastTime{ GetTime() }
+: m_center{ center }, m_dim{ dim }, m_angle{ angle }, m_turnSpeed{ turnSpeed }, 
+m_speed{ speed}, m_lastTime{ GetTime() }
 {}
 
 void Entity::move()
 {
-    m_center.x += (std::cos(m_angle * (Constants::pi / 180.0f)) * m_speed);
-    m_center.y += (std::sin(m_angle * (Constants::pi / 180.0f)) * m_speed); 
+    m_center.x += (std::cos(Helper::toRad(m_angle)) * m_speed);
+    m_center.y += (std::sin(Helper::toRad(m_angle)) * m_speed); 
 
     updateHitBox();
 }
 
-void Entity::render()
+void Entity::render() const
 {
-    DrawRectangleLines(toI(m_tl.x), toI(m_tl.y), toI(m_dim.x), toI(m_dim.y), RED);
+    DrawRectangleLines(Helper::toI(m_tl.x), Helper::toI(m_tl.y), Helper::toI(m_dim.x), Helper::toI(m_dim.y), RED);
 }
 
 bool Entity::checkCollision(Vec tl, Vec br) const

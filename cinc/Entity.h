@@ -1,23 +1,17 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <raylib.h>
-
-#include "Aggregates.h"
-#include "../Sprite/Sprite.h"
-
-int toI(float value);
+#include "../inc/Aggregates.h"
 
 class Entity
 {
 public:
     Entity() = default;
-    ~Entity() = default;
 
     Entity(Vec center, Vec dim, float angle, float turnSpeed, float speed);
 
     void move();
-    void render();
+    void render() const;
     bool checkCollision(Vec tl, Vec br) const;
 
     Vec getTl() const;

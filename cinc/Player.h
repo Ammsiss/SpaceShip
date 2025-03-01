@@ -3,8 +3,9 @@
 
 #include <deque>
 
-#include "../Bullet/Bullet.h"
-#include "../Entity/Entity.h"
+#include "Bullet.h"
+
+#include "../cinc/Entity.h"
 
 class Enemy;
 

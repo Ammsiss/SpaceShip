@@ -1,8 +1,14 @@
+#include <raylib.h>
+
+#include "../cinc/Player.h"
+
+#include "../cinc/Enemy.h"
+#include "../cinc/Entity.h"
+
 #include "../inc/Aggregates.h"
 #include "../inc/Constants.h"
-#include "../Enemy/Enemy.h"
+#include "../inc/Helper.h"
 
-#include "Player.h"
 
 Player::Player(Vec center, float angle, float turnSpeed, float speed)
 : Entity{ center, Vec{ Constants::playerSize, Constants::playerSize }, angle, turnSpeed, speed }
@@ -67,5 +73,5 @@ bool Player::offScreen()
 void Player::render()
 {
     DrawText(TextFormat("%d", std::size(m_bullets)), 20, 20, 20, RED);
-    DrawRectangleLines(toI(m_tl.x), toI(m_tl.y), toI(m_dim.x), toI(m_dim.y), RED);
+    DrawRectangleLines(Helper::toI(m_tl.x), Helper::toI(m_tl.y), Helper::toI(m_dim.x), Helper::toI(m_dim.y), RED);
 }

@@ -1,4 +1,4 @@
-#include "Bullet.h"
+#include "../cinc/Bullet.h"
 
 #include "../inc/Constants.h"
 

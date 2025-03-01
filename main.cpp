@@ -2,27 +2,18 @@
 
 #include <string_view>
 #include <deque>
-#include <algorithm>
 
-#include "./Player/Player.h"
-#include "./Enemy/Enemy.h"
-#include "./Entity/Entity.h"
+#include "./cinc/Player.h"
+#include "./cinc/Enemy.h"
 
 #include "./inc/Constants.h"
-#include "./inc/Aggregates.h"
-#include "./inc/Random.h"
-
-int toI(float value)
-{
-    return static_cast<int>(value);
-}
+#include "./inc/Helper.h"
 
 bool menu()
 {
     constexpr int headerFontSize{ 50 };
     constexpr std::string_view header{"Space Game"};
     int headerTextSize{ MeasureText(header.data(), headerFontSize) };
-
     
     constexpr int optionFontSize{ 30 };
     constexpr std::string_view play{ "Play" };
@@ -46,10 +37,10 @@ bool menu()
 
         for (std::size_t i{ 0 }, spacing{ 100 }; i < std::size(options); ++i, spacing += 100)
         {
-            if (selection == toI(i))
-                DrawText("X", ((Constants::windowSize / 2) - (optionSize[i] / 2) - 30), toI(spacing) + 50, optionFontSize, BLUE);
+            if (selection == Helper::toI(i))
+                DrawText("X", ((Constants::windowSize / 2) - (optionSize[i] / 2) - 30), Helper::toI(spacing) + 50, optionFontSize, BLUE);
 
-            DrawText(options[i], (Constants::windowSize / 2) - (optionSize[i] / 2), toI(spacing) + 50, optionFontSize, RED);
+            DrawText(options[i], (Constants::windowSize / 2) - (optionSize[i] / 2), Helper::toI(spacing) + 50, optionFontSize, RED);
         }
 
         if (IsKeyPressed(KEY_W))
@@ -95,73 +86,25 @@ int main()
     InitWindow(1000, 1000, "Space Game");
     SetTargetFPS(60);
 
-    bool play = menu();
+    Player player{ Vec{ 500, 500 }, 0, 3, 4 };
+    Enemy enemy{ Vec{ -200, 500 }, 0, 0, 4 };
 
-    Player player{ Vec{ 500, 500 }, 0, 3.0f, 3 };
-
-    std::deque<Enemy> enemies
+    while (!WindowShouldClose()) 
     { 
-        Enemy{ Vec{ -50, static_cast<float>(Random::getInt(100, 900)) }, -0.5, 0, 4 }
-    };
-
-    bool dead{ false };
-    double lastTimeEnemy{ GetTime() };
-    while (play && !WindowShouldClose()) 
-    {
-        
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(BLACK); 
 
         player.updateDirection();
         player.move();
         player.render();
-
-        for (auto& enemy : enemies)
-        {
-            if (player.checkCollision(enemy.getTl(), enemy.getBr()) || player.offScreen() || player.getDead())
-            {
-                dead = true;
-            }
-        }
-         
         player.timeToShoot();
         player.shoot();
 
-        for (auto& enemy: enemies)
-        {
-            player.hitEnemy(enemy);
-            enemy.hitPlayer(player);
-            enemy.move();
-            enemy.render();
-
-            enemy.timeToShoot(player.getCenter());
-        }
-        enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
-            [](const auto& enemy)
-            {
-                if (enemy.offScreen() || enemy.getDead())
-                    return true;
-                return false;
-            }
-        ), enemies.end());
-        DrawText(TextFormat("%d", enemies.size()), 20, 50, 20, RED);
-
-        Enemy::shoot();
- 
-        double currentTime{ GetTime() };
-        if (currentTime - lastTimeEnemy >= 1)
-        {
-            enemies.emplace_back(Vec{ -50, static_cast<float>(Random::getInt(100, 900)) }, (Random::getInt(0, 1)) ? Random::getReal(0.0f, 45.0f) : Random::getReal(315.0f, 360.0f), 0, 4);
-            lastTimeEnemy = currentTime;
-        }
+        enemy.move();
+        enemy.render();
 
         EndDrawing();
-
-        if (dead)
-            break;
     }
-
-    youLose();
 
     CloseWindow();
 }

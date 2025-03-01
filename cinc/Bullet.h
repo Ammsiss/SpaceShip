@@ -1,7 +1,7 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include "../Entity/Entity.h"
+#include "Entity.h"
 
 class Bullet : public Entity
 {

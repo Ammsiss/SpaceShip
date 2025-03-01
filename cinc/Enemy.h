@@ -3,8 +3,8 @@
 
 #include <deque>
 
-#include "../Entity/Entity.h"
-#include "../Bullet/Bullet.h"
+#include "Entity.h"
+#include "Bullet.h"
 
 #include "../inc/Aggregates.h"
 
