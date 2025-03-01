@@ -19,11 +19,14 @@ all: $(BINARY)
 $(BINARY): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(BINARY) $(LDLIBS)
 
+cc:
+	bear -- $(MAKE) clean all
+
 ./build/%.o: %.cpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(BINARY) build
+	rm -rf $(BINARY) build compile_commands.json
 
 -include $(DEPFILES)
