@@ -10,6 +10,7 @@
 
 class Player;
 
+// Enemy{ Vec center, float angle, float turnSpeed, float speed }
 class Enemy : public Entity
 {
 public:

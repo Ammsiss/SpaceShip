@@ -47,8 +47,7 @@ void Enemy::shoot()
 {
     for (auto& bullet : m_bullets)
     {
-        bullet.move();
-        bullet.render();
+        Helper::updateEntity(bullet);
     }
 
     auto toRemove{ std::remove_if(m_bullets.begin(), m_bullets.end(),
@@ -64,11 +63,11 @@ void Enemy::hitPlayer(Player& player)
 {
     for (auto& bullet : m_bullets)
     {
-        if (bullet.checkCollision(player.getTl(), player.getBr()))
+        if (bullet.checkCollision(player))
         {
             bullet.setDead();
             player.setDead();
-        }            
+        }
     }
 }
 

@@ -12,7 +12,7 @@ public:
 
     void move();
     void render() const;
-    bool checkCollision(Vec tl, Vec br) const;
+    bool checkCollision(const Entity& entity) const;
 
     Vec getTl() const;
     Vec getBr() const;
@@ -34,7 +34,7 @@ protected:
     double m_lastTime{};
 
     void updateHitBox();
-     
+
 private:
 };
 

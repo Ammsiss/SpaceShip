@@ -8,13 +8,14 @@
 
 #include "./inc/Constants.h"
 #include "./inc/Helper.h"
+#include "./inc/Random.h"
 
 bool menu()
 {
     constexpr int headerFontSize{ 50 };
     constexpr std::string_view header{"Space Game"};
     int headerTextSize{ MeasureText(header.data(), headerFontSize) };
-    
+
     constexpr int optionFontSize{ 30 };
     constexpr std::string_view play{ "Play" };
     constexpr std::string_view quit{ "Quit" };
@@ -33,7 +34,7 @@ bool menu()
         ClearBackground(BLACK);
 
         DrawText(header.data(), (Constants::windowSize / 2) - (headerTextSize / 2), 50, headerFontSize, RED);
-        
+
 
         for (std::size_t i{ 0 }, spacing{ 100 }; i < std::size(options); ++i, spacing += 100)
         {
@@ -53,7 +54,7 @@ bool menu()
         else if (IsKeyPressed(KEY_ENTER) && selection == 1)
             close = true;
 
- 
+
         EndDrawing();
 
         if (begin)
@@ -81,29 +82,53 @@ void youLose()
     }
 }
 
+void spawnEnemy(double& lastTime, std::deque<Enemy>& enemies)
+{
+    double currentTime{ GetTime() };
+    if (currentTime - lastTime >= 3)
+    {
+        enemies.emplace_back(Vec{ -200, Random::getReal(100.0f, 900.0f) }, 0, 0, 4);
+        lastTime = currentTime;
+    }
+
+}
+
 int main()
 {
     InitWindow(1000, 1000, "Space Game");
     SetTargetFPS(60);
 
-    Player player{ Vec{ 500, 500 }, 0, 3, 4 };
-    Enemy enemy{ Vec{ -200, 500 }, 0, 0, 4 };
+    bool play{ menu() };
 
-    while (!WindowShouldClose()) 
-    { 
-        BeginDrawing();
-        ClearBackground(BLACK); 
+    if (play)
+    {
+        Player player{ Vec{ 500, 500 }, 0, 3, 4 };
+        std::deque<Enemy> enemies{};
 
-        player.updateDirection();
-        player.move();
-        player.render();
-        player.timeToShoot();
-        player.shoot();
+        double lastTime{ GetTime() };
+        while (!WindowShouldClose()) 
+        {
+            BeginDrawing();
+            ClearBackground(BLACK); 
 
-        enemy.move();
-        enemy.render();
+            // PLAYER
+            Helper::updateEntity(player);
+            player.updateDirection();
+            player.shoot();
 
-        EndDrawing();
+            // ENEMY
+            spawnEnemy(lastTime, enemies);
+            for (auto& enemy : enemies)
+            {
+                Helper::updateEntity(enemy);
+                enemy.timeToShoot(player.getCenter());
+            }
+            Enemy::shoot();
+
+
+
+            EndDrawing();
+        }
     }
 
     CloseWindow();

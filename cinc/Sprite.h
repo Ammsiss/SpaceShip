@@ -21,7 +21,7 @@ public:
 
     Sprite(const Sprite& sprite) = delete;
     Sprite& operator=(const Sprite& sprite) = delete;
-    
+
     Sprite(Sprite&& sprite) noexcept
     {
         m_texture.id = sprite.m_texture.id;
