@@ -13,12 +13,13 @@ class Player : public Entity
 {
 public: 
     Player() = default;
-    Player(Vec center, float angle, float turnSpeed, float speed);
+    Player(Vec center, float angle, float turnSpeed, float speed, Color color);
 
     void updateDirection();
     void timeToShoot();
     void shoot();
-    void hitEnemy(Enemy& enemy);
+    void hitEntity(Entity& entity);
+    void hitMeteor(Entity& enemy);
     bool offScreen();
     void render();
 

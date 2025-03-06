@@ -1,4 +1,6 @@
 #include <raylib.h>
+#include <cmath>
+#include <algorithm>
 
 #include "../cinc/Enemy.h"
 
@@ -7,18 +9,16 @@
 #include "../inc/Aggregates.h"
 #include "../inc/Helper.h"
 
-Enemy::Enemy(Vec center, float angle, float turnSpeed, float speed)
-: Entity{ center, Vec{ Constants::playerSize, Constants::playerSize }, angle, turnSpeed, speed }
+Enemy::Enemy(Vec center, float angle, float turnSpeed, float speed, Color color)
+: Entity{ center, Vec{ Constants::playerSize, Constants::playerSize }, angle, turnSpeed, speed, color }
 {
     updateHitBox();
 }
 
-bool Enemy::offScreen() const
+void Enemy::offScreen()
 {
     if (m_tl.x > 1000)
-        return true;
-
-    return false;
+        m_dead = true;
 }
 
 float Enemy::getAngle(Vec playerCenter)
@@ -34,40 +34,36 @@ float Enemy::getAngle(Vec playerCenter)
 
 void Enemy::timeToShoot(Vec playerCenter)
 {
+    static double lastTime{ GetTime() };
+
     double currentTime{ GetTime() };
-    if (currentTime - m_lastTime < 1)
-        return;
-
-    m_bullets.push_front(Bullet{ m_center, getAngle(playerCenter), 0, 3 }); 
-
-    m_lastTime = currentTime;
+    if (currentTime - lastTime >= 2)
+    {
+        s_bullets.push_front(Bullet{ m_center, getAngle(playerCenter), 0, 3, RED }); 
+        lastTime = currentTime;
+    }
 }
 
 void Enemy::shoot()
 {
-    for (auto& bullet : m_bullets)
+    for (auto& bullet : s_bullets)
     {
-        Helper::updateEntity(bullet);
+        bullet.updateEntity();
     }
 
-    auto toRemove{ std::remove_if(m_bullets.begin(), m_bullets.end(),
+    auto toRemove{ std::remove_if(s_bullets.begin(), s_bullets.end(),
         [](const auto& bullet)
         {
             return bullet.outOfBounds() || bullet.getDead();
         }
     )};
-    m_bullets.erase(toRemove, m_bullets.end());
+    s_bullets.erase(toRemove, s_bullets.end());
 }
 
 void Enemy::hitPlayer(Player& player)
 {
-    for (auto& bullet : m_bullets)
+    for (auto& bullet : s_bullets)
     {
-        if (bullet.checkCollision(player))
-        {
-            bullet.setDead();
-            player.setDead();
-        }
+        player.checkCollision(bullet);
     }
 }
-

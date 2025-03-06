@@ -2,7 +2,7 @@ BINARY = main
 CODEDIRS = . ./src
 INCDIRS = . ./inc
 
-CXX = g++
+CXX = clang++
 OPT = -O0
 DEPFLAGS = -MP -MD
 LDLIBS = $(shell pkg-config --static --libs raylib)

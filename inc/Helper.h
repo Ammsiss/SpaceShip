@@ -1,13 +1,12 @@
 #ifndef HELPER_H
 #define HELPER_H
 
-#include "../cinc/Entity.h"
-
 #include "Constants.h"
 
 namespace Helper
 {
-    inline int toI(float value)
+    template <typename T>
+    inline int toI(T value)
     {
         return static_cast<int>(value);
     }
@@ -20,12 +19,6 @@ namespace Helper
     inline float toDeg(float radians)
     {
         return (radians * 180) / Constants::pi;
-    }
-
-    inline void updateEntity(Entity& entity)
-    {
-        entity.move();
-        entity.render();
     }
 }
 

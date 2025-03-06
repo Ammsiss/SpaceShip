@@ -2,6 +2,7 @@
 
 #include <string_view>
 #include <deque>
+#include <algorithm>
 
 #include "./cinc/Player.h"
 #include "./cinc/Enemy.h"
@@ -82,15 +83,32 @@ void youLose()
     }
 }
 
-void spawnEnemy(double& lastTime, std::deque<Enemy>& enemies)
+Entity* spawnEnemy()
 {
+    static double lastTime{ GetTime() };
+
     double currentTime{ GetTime() };
     if (currentTime - lastTime >= 3)
     {
-        enemies.emplace_back(Vec{ -200, Random::getReal(100.0f, 900.0f) }, 0, 0, 4);
         lastTime = currentTime;
+        return new Enemy{ Vec{ -200, Random::getReal(100.0f, 900.0f) }, 0, 0, 4, RED };
     }
 
+    return nullptr;
+}
+
+Entity* spawnMeteor()
+{
+    static double lastTime{ GetTime() };
+
+    double currentTime{ GetTime() };
+    if (currentTime - lastTime >= 5)
+    {
+        lastTime = currentTime;
+        return new Entity{ Vec{ -200, Random::getReal(100.0f, 900.0f) }, Vec{ 20, 20 }, 0, 0, 3, BROWN };
+    }
+
+    return nullptr;
 }
 
 int main()
@@ -102,34 +120,59 @@ int main()
 
     if (play)
     {
-        Player player{ Vec{ 500, 500 }, 0, 3, 4 };
-        std::deque<Enemy> enemies{};
+        Player player{ Vec{ 500, 500 }, 0, 3, 4, BLUE };
+        std::deque<Entity*> entities{};
 
-        double lastTime{ GetTime() };
         while (!WindowShouldClose()) 
         {
             BeginDrawing();
             ClearBackground(BLACK); 
 
-            // PLAYER
-            Helper::updateEntity(player);
+            player.updateEntity();
             player.updateDirection();
             player.shoot();
 
-            // ENEMY
-            spawnEnemy(lastTime, enemies);
-            for (auto& enemy : enemies)
+            Entity* enemy_ptr{ spawnEnemy() };
+            if (enemy_ptr)
+                entities.push_back(enemy_ptr);
+
+            Entity* meteor_ptr{ spawnMeteor() };
+            if (meteor_ptr)
+                entities.push_back(meteor_ptr);
+
+            for (auto& entity : entities)
             {
-                Helper::updateEntity(enemy);
-                enemy.timeToShoot(player.getCenter());
+                entity->updateEntity();
+                player.checkCollision(*entity);
+                player.hitEntity(*entity);
+
+                Enemy* enemy { dynamic_cast<Enemy*>(entity) };
+                if (enemy)
+                {
+                    enemy->timeToShoot(player.getCenter());
+                    enemy->offScreen();
+                }
             }
             Enemy::shoot();
+            Enemy::hitPlayer(player);
 
-
+            entities.erase(std::remove_if(entities.begin(), entities.end(), 
+                [](const auto& entity)
+                {
+                    return entity->getDead();
+                }
+            ), entities.end());
+            Enemy::printBullet();
 
             EndDrawing();
+ 
+            if (player.getDead())
+                break;
+
         }
     }
+
+    youLose();
 
     CloseWindow();
 }

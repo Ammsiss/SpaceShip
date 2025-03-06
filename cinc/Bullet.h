@@ -7,10 +7,10 @@ class Bullet : public Entity
 {
 public:
     Bullet() = default;
-    Bullet(Vec center, float angle, float turnSpeed, float speed);
+    Bullet(Vec center, float angle, float turnSpeed, float speed, Color color);
 
-    bool outOfBounds() const;  
-    
+    bool outOfBounds() const;
+
 private:
 };
 

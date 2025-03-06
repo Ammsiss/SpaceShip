@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <algorithm>
 
 #include "../cinc/Player.h"
 
@@ -10,8 +11,8 @@
 #include "../inc/Helper.h"
 
 
-Player::Player(Vec center, float angle, float turnSpeed, float speed)
-: Entity{ center, Vec{ Constants::playerSize, Constants::playerSize }, angle, turnSpeed, speed }
+Player::Player(Vec center, float angle, float turnSpeed, float speed, Color color)
+: Entity{ center, Vec{ Constants::playerSize, Constants::playerSize }, angle, turnSpeed, speed, color }
 {
     updateHitBox();
 }
@@ -26,13 +27,14 @@ void Player::updateDirection()
 
 void Player::timeToShoot()
 {
+    static double lastTime{ GetTime() };
+
     double currentTime{ GetTime() };
-    if (currentTime - m_lastTime < 0.35)
-        return;
-
-    m_bullets.push_front(Bullet{ m_center, m_angle, 0, 6 }); 
-
-    m_lastTime = currentTime;
+    if (currentTime - lastTime >= 0.35)
+    {
+        m_bullets.push_front(Bullet{ m_center, m_angle, 0, 6, BLUE }); 
+        lastTime = currentTime;
+    }
 }
 
 void Player::shoot()
@@ -41,7 +43,7 @@ void Player::shoot()
 
     for (auto& bullet : m_bullets)
     {
-        Helper::updateEntity(bullet);
+        bullet.updateEntity();
     }
 
     auto toRemove{ std::remove_if(m_bullets.begin(), m_bullets.end(),
@@ -53,15 +55,11 @@ void Player::shoot()
     m_bullets.erase(toRemove, m_bullets.end());
 }
 
-void Player::hitEnemy(Enemy& enemy)
+void Player::hitEntity(Entity& entity)
 {
     for (auto& bullet : m_bullets)
     {
-        if (bullet.checkCollision(enemy))
-        {
-            bullet.setDead();
-            enemy.setDead();
-        }
+        bullet.checkCollision(entity);
     }
 }
 
