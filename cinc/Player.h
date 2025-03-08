@@ -11,19 +11,19 @@ class Enemy;
 
 class Player : public Entity
 {
-public: 
+  public:
     Player() = default;
     Player(Vec center, float angle, float turnSpeed, float speed, Color color);
 
     void updateDirection();
     void timeToShoot();
     void shoot();
-    void hitEntity(Entity& entity);
-    void hitMeteor(Entity& enemy);
+    void hitEntity(Entity &entity);
+    void hitMeteor(Entity &enemy);
     bool offScreen();
     void render();
 
-private:
+  private:
     std::deque<Bullet> m_bullets{};
 };
 

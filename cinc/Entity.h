@@ -7,7 +7,7 @@
 
 class Entity
 {
-public:
+  public:
     Entity() = default;
     virtual ~Entity() = default;
 
@@ -15,18 +15,21 @@ public:
 
     void move();
     void render() const;
-    void checkCollision(Entity& entity);
+    void checkCollision(Entity &entity);
     void updateEntity();
 
     Vec getTl() const;
     Vec getBr() const;
 
-    Vec getCenter() const { return m_center; }
+    Vec getCenter() const
+    {
+        return m_center;
+    }
 
     bool getDead() const;
     void setDead();
 
-protected:
+  protected:
     Vec m_center{};
     Vec m_dim{};
     Vec m_tl{};
@@ -34,12 +37,12 @@ protected:
     float m_angle{};
     float m_turnSpeed{};
     float m_speed{};
-    bool m_dead{ false };
-    Color m_color{ RED };
+    bool m_dead{false};
+    Color m_color{RED};
 
     void updateHitBox();
 
-private:
+  private:
 };
 
 #endif

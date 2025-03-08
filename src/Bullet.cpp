@@ -5,7 +5,7 @@
 class Entity;
 
 Bullet::Bullet(Vec center, float angle, float turnSpeed, float speed, Color color)
-: Entity{ center, Vec{ Constants::bulletSize, Constants::bulletSize }, angle, turnSpeed, speed, color }
+    : Entity{center, Vec{Constants::bulletSize, Constants::bulletSize}, angle, turnSpeed, speed, color}
 {
     updateHitBox();
 }

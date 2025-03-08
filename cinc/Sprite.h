@@ -6,12 +6,12 @@
 
 class Sprite
 {
-public:
+  public:
     Sprite() = default;
 
-    Sprite(std::string name)
-    : m_texture{ LoadTexture(("../sprites/" + name).c_str()) }
-    {}
+    Sprite(std::string name) : m_texture{LoadTexture(("../sprites/" + name).c_str())}
+    {
+    }
 
     ~Sprite()
     {
@@ -19,16 +19,16 @@ public:
             UnloadTexture(m_texture);
     }
 
-    Sprite(const Sprite& sprite) = delete;
-    Sprite& operator=(const Sprite& sprite) = delete;
+    Sprite(const Sprite &sprite) = delete;
+    Sprite &operator=(const Sprite &sprite) = delete;
 
-    Sprite(Sprite&& sprite) noexcept
+    Sprite(Sprite &&sprite) noexcept
     {
         m_texture.id = sprite.m_texture.id;
         sprite.m_texture.id = 0;
     }
 
-    Sprite& operator=(Sprite&& sprite) noexcept
+    Sprite &operator=(Sprite &&sprite) noexcept
     {
         m_texture.id = sprite.m_texture.id;
         sprite.m_texture.id = 0;
@@ -36,7 +36,7 @@ public:
         return *this;
     }
 
-private:
+  private:
     Texture2D m_texture{};
 };
 
