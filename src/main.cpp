@@ -1,14 +1,13 @@
 #include <raylib.h>
 
-#include <algorithm>
 #include <deque>
 #include <string_view>
 
 #include "./cinc/Enemy.h"
+#include "./cinc/EntityManager.h"
 #include "./cinc/Player.h"
 #include "./inc/Constants.h"
 #include "./inc/Helper.h"
-#include "./inc/Random.h"
 
 bool menu()
 {
@@ -83,34 +82,6 @@ void youLose()
     }
 }
 
-Entity *spawnEnemy()
-{
-    static double lastTime{GetTime()};
-
-    double currentTime{GetTime()};
-    if (currentTime - lastTime >= 3)
-    {
-        lastTime = currentTime;
-        return new Enemy{Vec{-200, Random::getReal(100.0f, 900.0f)}, 0, 0, 4, RED};
-    }
-
-    return nullptr;
-}
-
-Entity *spawnMeteor()
-{
-    static double lastTime{GetTime()};
-
-    double currentTime{GetTime()};
-    if (currentTime - lastTime >= 0.5)
-    {
-        lastTime = currentTime;
-        return new Entity{Vec{-200, Random::getReal(100.0f, 900.0f)}, Vec{20, 20}, 0, 0, 3, BROWN};
-    }
-
-    return nullptr;
-}
-
 int main()
 {
     InitWindow(1000, 1000, "Space Game");
@@ -121,7 +92,6 @@ int main()
     if (play)
     {
         Player player{Vec{500, 500}, 0, 3, 4, BLUE};
-        std::deque<Entity *> entities{};
 
         while (!WindowShouldClose())
         {
@@ -130,36 +100,35 @@ int main()
 
             player.updateEntity();
             player.updateDirection();
-            player.shoot();
+            player.timeToShoot();
 
-            Entity *enemy_ptr{spawnEnemy()};
-            if (enemy_ptr)
-                entities.push_back(enemy_ptr);
+            EntityManager::spawnEnemy();
+            EntityManager::spawnMeteor();
 
-            Entity *meteor_ptr{spawnMeteor()};
-            if (meteor_ptr)
-                entities.push_back(meteor_ptr);
-
-            for (auto &entity : entities)
+            for (auto &entity : EntityManager::getEntities())
             {
                 entity->updateEntity();
                 player.checkCollision(*entity);
-                player.hitEntity(*entity);
 
-                Enemy *enemy{dynamic_cast<Enemy *>(entity)};
+                Enemy *enemy{dynamic_cast<Enemy*>(entity)};
                 if (enemy)
                 {
                     enemy->timeToShoot(player.getCenter());
-                    enemy->offScreen();
+                }
+
+                for (auto &bullet : EntityManager::getPlayerBullets())
+                {
+                    bullet->checkCollision(*entity);
                 }
             }
-            Enemy::shoot();
-            Enemy::hitPlayer(player);
 
-            entities.erase(
-                std::remove_if(entities.begin(), entities.end(), [](const auto &entity) { return entity->getDead(); }),
-                entities.end());
-            Enemy::printBullet();
+            for (auto &bullet : EntityManager::getPlayerBullets())
+            {
+                bullet->updateEntity();
+            }
+
+            EntityManager::cleanEntities();
+            EntityManager::cleanPlayerBullets();
 
             EndDrawing();
 

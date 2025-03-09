@@ -1,9 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <deque>
 
-#include "Bullet.h"
 
 #include "../cinc/Entity.h"
 
@@ -17,14 +15,10 @@ class Player : public Entity
 
     void updateDirection();
     void timeToShoot();
-    void shoot();
-    void hitEntity(Entity &entity);
-    void hitMeteor(Entity &enemy);
-    bool offScreen();
+    void offScreen() override;
     void render();
 
   private:
-    std::deque<Bullet> m_bullets{};
 };
 
 #endif

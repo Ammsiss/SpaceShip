@@ -10,13 +10,8 @@ Bullet::Bullet(Vec center, float angle, float turnSpeed, float speed, Color colo
     updateHitBox();
 }
 
-bool Bullet::outOfBounds() const
+void Bullet::offScreen()
 {
-    if (m_tl.x > Constants::windowSize || m_br.x < 0)
-        return true;
-
-    if (m_tl.y > Constants::windowSize || m_br.y < 0)
-        return true;
-
-    return false;
+    if (m_tl.x > Constants::windowSize || m_tl.y > Constants::windowSize || m_br.x < 0 || m_br.y < 0)
+        m_dead = true;
 }

@@ -9,7 +9,7 @@ class Bullet : public Entity
     Bullet() = default;
     Bullet(Vec center, float angle, float turnSpeed, float speed, Color color);
 
-    bool outOfBounds() const;
+    void offScreen() override;
 
   private:
 };

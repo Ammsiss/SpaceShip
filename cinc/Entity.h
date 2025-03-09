@@ -16,10 +16,8 @@ class Entity
     void move();
     void render() const;
     void checkCollision(Entity &entity);
+    virtual void offScreen();
     void updateEntity();
-
-    Vec getTl() const;
-    Vec getBr() const;
 
     Vec getCenter() const
     {

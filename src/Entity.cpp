@@ -24,7 +24,7 @@ void Entity::render() const
     DrawRectangleLines(Helper::toI(m_tl.x), Helper::toI(m_tl.y), Helper::toI(m_dim.x), Helper::toI(m_dim.y), m_color);
 }
 
-void Entity::checkCollision(Entity &entity)
+void Entity::checkCollision(Entity& entity)
 {
     if ((std::fmax(entity.m_tl.x, m_tl.x) <= std::fmin(entity.m_br.x, m_br.x) &&
          std::fmax(entity.m_tl.y, m_tl.y) <= std::fmin(entity.m_br.y, m_br.y)))
@@ -34,13 +34,10 @@ void Entity::checkCollision(Entity &entity)
     }
 }
 
-Vec Entity::getTl() const
+void Entity::offScreen()
 {
-    return m_tl;
-}
-Vec Entity::getBr() const
-{
-    return m_br;
+    if (m_tl.x > Constants::windowSize)
+        m_dead = true;
 }
 
 bool Entity::getDead() const
@@ -65,4 +62,5 @@ void Entity::updateEntity()
 {
     move();
     render();
+    offScreen();
 }
