@@ -2,42 +2,50 @@
 #define SPRITE_H
 
 #include <raylib.h>
-#include <string>
+#include <array>
 
 class Sprite
 {
   public:
-    Sprite() = default;
-
-    Sprite(std::string name) : m_texture{LoadTexture(("../sprites/" + name).c_str())}
+    enum Type
     {
+        player,
+        enemy,
+        exploder,
+        exploderBaby,
+        meteor,
+        bullet,
+        enemyBullet,
+        particle,
+        max_type,
+    };
+
+    static Texture2D& getTexture(Type type)
+    {
+        return m_textures[type];
     }
 
-    ~Sprite()
+    static void cleanTextures()
     {
-        if (m_texture.id != 0)
-            UnloadTexture(m_texture);
+        for (auto& texture : m_textures)
+        {
+            UnloadTexture(texture);
+        }
     }
 
-    Sprite(const Sprite &sprite) = delete;
-    Sprite &operator=(const Sprite &sprite) = delete;
-
-    Sprite(Sprite &&sprite) noexcept
+    static void loadTextures()
     {
-        m_texture.id = sprite.m_texture.id;
-        sprite.m_texture.id = 0;
-    }
-
-    Sprite &operator=(Sprite &&sprite) noexcept
-    {
-        m_texture.id = sprite.m_texture.id;
-        sprite.m_texture.id = 0;
-
-        return *this;
+        m_textures[player] = LoadTexture("/Users/ammsiss/Projects/SpaceShip/sprites/player.png");
+        m_textures[enemy] = LoadTexture("/Users/ammsiss/Projects/SpaceShip/sprites/enemy.png");
+        m_textures[exploder] = LoadTexture("/Users/ammsiss/Projects/SpaceShip/sprites/exploder.png");
+        m_textures[exploderBaby] = LoadTexture("/Users/ammsiss/Projects/SpaceShip/sprites/exploderBaby.png");
+        m_textures[meteor] = LoadTexture("/Users/ammsiss/Projects/SpaceShip/sprites/meteor.png");
+        m_textures[bullet] = LoadTexture("/Users/ammsiss/Projects/SpaceShip/sprites/bullet.png");
+        m_textures[enemyBullet] = LoadTexture("/Users/ammsiss/Projects/SpaceShip/sprites/enemyBullet.png");
     }
 
   private:
-    Texture2D m_texture{};
+    static inline std::array<Texture2D, 7> m_textures{};
 };
 
 #endif

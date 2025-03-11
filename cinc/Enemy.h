@@ -1,7 +1,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-
 #include "Entity.h"
 
 #include "../inc/Aggregates.h"
@@ -13,8 +12,7 @@ class Player;
 class Enemy : public Entity
 {
   public:
-    Enemy() = default;
-    Enemy(Vec center, float angle, float turnSpeed, float speed, Color color);
+    Enemy(Vec center, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType);
 
     float getAngle(Vec playerCenter);
     void timeToShoot(Vec playerCenter);

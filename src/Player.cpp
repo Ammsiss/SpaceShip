@@ -5,12 +5,13 @@
 #include "../cinc/Enemy.h"
 #include "../cinc/Entity.h"
 #include "../cinc/EntityManager.h"
+#include "../cinc/Sprite.h"
 
 #include "../inc/Aggregates.h"
 #include "../inc/Constants.h"
 
-Player::Player(Vec center, float angle, float turnSpeed, float speed, Color color)
-    : Entity{center, Vec{Constants::playerSize, Constants::playerSize}, angle, turnSpeed, speed, color}
+Player::Player(Vec center, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType)
+    : Entity{center, Vec{Constants::playerSize, Constants::playerSize}, angle, turnSpeed, speed, color, goingRight, textureType}
 {
     updateHitBox();
 }

@@ -8,6 +8,8 @@
 #include "./cinc/Player.h"
 #include "./inc/Constants.h"
 #include "./inc/Helper.h"
+#include "cinc/Bullet.h"
+#include "cinc/Exploder.h"
 
 bool menu()
 {
@@ -82,6 +84,39 @@ void youLose()
     }
 }
 
+void printDebug()
+{
+    int enemyCount{ 0 };
+    int meteorCount{ 0 };
+    int exploderCount{ 0 };
+    int enemyBulletCount{ 0 };
+
+    for (const auto& entity : EntityManager::getEntities())
+    { 
+        if (dynamic_cast<Enemy*>(entity))
+        {
+            ++enemyCount;
+        }
+        else if (dynamic_cast<Exploder*>(entity))
+        {
+            ++exploderCount;
+        }
+        else if (dynamic_cast<Bullet*>(entity))
+        {
+            ++enemyBulletCount;
+        }
+        else
+        {
+            ++meteorCount;
+        }
+    }
+
+    DrawText(TextFormat("Enemies: %d", enemyCount), 10, 10, 15, RED);
+    DrawText(TextFormat("E Bullets: %d", enemyBulletCount), 10, 30, 15, RED);
+    DrawText(TextFormat("Meteors: %d", meteorCount), 10, 50, 15, RED);
+    DrawText(TextFormat("Exploders: %d", exploderCount), 10, 70, 15, RED);
+}
+
 int main()
 {
     InitWindow(1000, 1000, "Space Game");
@@ -89,26 +124,33 @@ int main()
 
     bool play{menu()};
 
+    int score{ 0 };
     if (play)
     {
-        Player player{Vec{500, 500}, 0, 3, 4, BLUE};
+        Sprite::loadTextures();
+        Player player{Vec{500, 500}, 0, 3, 3, BLUE, true, Sprite::Type::player};
 
         while (!WindowShouldClose())
         {
             BeginDrawing();
             ClearBackground(BLACK);
 
-            player.updateEntity();
-            player.updateDirection();
-            player.timeToShoot();
+            const char* scoreText{ TextFormat("SCORE: %d", score) };
+            int length{ MeasureText(scoreText, 30) };
+            DrawText(scoreText, (Constants::windowSize / 2) - (length / 2), 10, 30, RED);
+
+            //player.updateEntity();
+            //player.updateDirection();
+            //player.timeToShoot();
 
             EntityManager::spawnEnemy();
             EntityManager::spawnMeteor();
+            EntityManager::spawnExploder();
 
             for (auto &entity : EntityManager::getEntities())
             {
                 entity->updateEntity();
-                player.checkCollision(*entity);
+                //player.checkCollision(*entity);
 
                 Enemy *enemy{dynamic_cast<Enemy*>(entity)};
                 if (enemy)
@@ -127,13 +169,27 @@ int main()
                 bullet->updateEntity();
             }
 
-            EntityManager::cleanEntities();
-            EntityManager::cleanPlayerBullets();
+            for (auto &particle : EntityManager::getParticles())
+            {
+                particle->move();
+                particle->render(RED);
+                particle->offScreen();
+            }
 
+
+            printDebug();
+            DrawText(TextFormat("Particles: %d", EntityManager::getParticles().size()), 10, 90, 15, RED);
+            
+            EntityManager::cleanEntities(score);
+            //EntityManager::cleanPlayerBullets();
+            EntityManager::cleanParticles();
             EndDrawing();
 
             if (player.getDead())
+            {
+                Sprite::cleanTextures();
                 break;
+            }
         }
     }
 

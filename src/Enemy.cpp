@@ -9,8 +9,8 @@
 #include "../inc/Constants.h"
 #include "../inc/Helper.h"
 
-Enemy::Enemy(Vec center, float angle, float turnSpeed, float speed, Color color)
-    : Entity{center, Vec{Constants::enemySize, Constants::enemySize}, angle, turnSpeed, speed, color}
+Enemy::Enemy(Vec center, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType)
+    : Entity{center, Vec{Constants::enemySize, Constants::enemySize}, angle, turnSpeed, speed, color, goingRight, textureType}
 {
     updateHitBox();
 }
@@ -29,10 +29,15 @@ float Enemy::getAngle(Vec playerCenter)
 void Enemy::timeToShoot(Vec playerCenter)
 {
     double currentTime{GetTime()};
-    if (currentTime - m_lastTime >= 0.5)
+
+    static double spawnTime{ 3 };
+    if (currentTime - m_lastTime >= spawnTime)
     {
         EntityManager::spawnBullet(m_center, getAngle(playerCenter));
         m_lastTime = currentTime;
+
+        if (spawnTime >= 0.5)
+            spawnTime -= 0.01;
     }
 }
 

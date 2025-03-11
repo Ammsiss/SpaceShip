@@ -1,11 +1,12 @@
 #include "../cinc/Bullet.h"
+#include "../cinc/Sprite.h"
 
 #include "../inc/Constants.h"
 
 class Entity;
 
-Bullet::Bullet(Vec center, float angle, float turnSpeed, float speed, Color color)
-    : Entity{center, Vec{Constants::bulletSize, Constants::bulletSize}, angle, turnSpeed, speed, color}
+Bullet::Bullet(Vec center, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType)
+    : Entity{center, Vec{Constants::bulletSize, Constants::bulletSize}, angle, turnSpeed, speed, color, goingRight, textureType}
 {
     updateHitBox();
 }
