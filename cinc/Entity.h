@@ -16,7 +16,7 @@ class Entity
 
     void move();
     void render() const;
-    void render(Color color) const;
+    void renderParticle();
     void checkCollision(Entity &entity);
     virtual void offScreen();
     void updateEntity();
@@ -44,6 +44,8 @@ class Entity
     bool m_goingRight{ true };
     bool m_killedByPlayer{ false };
     Sprite::Type m_textureType{};
+    double m_particleTimer{};
+    float alpha{ 1.0f };
 
     void updateHitBox();
 

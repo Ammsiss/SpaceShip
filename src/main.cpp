@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <string_view>
+#include <string>
 
 #include "./cinc/Enemy.h"
 #include "./cinc/EntityManager.h"
@@ -67,7 +68,7 @@ bool menu()
     return false;
 }
 
-void youLose()
+void youLose(int score)
 {
     while (!WindowShouldClose())
     {
@@ -76,7 +77,10 @@ void youLose()
 
         constexpr std::string_view header{"LOSER!"};
         const int headerTextSize{MeasureText(header.data(), 50)};
+        std::string scoreText{ "SCORE: " + std::to_string(score) };
+        const int scoreTextSize{ MeasureText(scoreText.data(), 50) };
 
+        DrawText(TextFormat("SCORE: %d", score), (Constants::windowSize / 2) - (scoreTextSize / 2), 220, 50, RED);
         DrawText(header.data(), (Constants::windowSize / 2) - (headerTextSize / 2), (Constants::windowSize / 2) - 25,
                  50, RED);
 
@@ -139,9 +143,9 @@ int main()
             int length{ MeasureText(scoreText, 30) };
             DrawText(scoreText, (Constants::windowSize / 2) - (length / 2), 10, 30, RED);
 
-            //player.updateEntity();
-            //player.updateDirection();
-            //player.timeToShoot();
+            player.updateEntity();
+            player.updateDirection();
+            player.timeToShoot();
 
             EntityManager::spawnEnemy();
             EntityManager::spawnMeteor();
@@ -150,8 +154,7 @@ int main()
             for (auto &entity : EntityManager::getEntities())
             {
                 entity->updateEntity();
-                //player.checkCollision(*entity);
-
+                player.checkCollision(*entity);
                 Enemy *enemy{dynamic_cast<Enemy*>(entity)};
                 if (enemy)
                 {
@@ -172,7 +175,7 @@ int main()
             for (auto &particle : EntityManager::getParticles())
             {
                 particle->move();
-                particle->render(RED);
+                particle->renderParticle();
                 particle->offScreen();
             }
 
@@ -181,19 +184,25 @@ int main()
             DrawText(TextFormat("Particles: %d", EntityManager::getParticles().size()), 10, 90, 15, RED);
             
             EntityManager::cleanEntities(score);
-            //EntityManager::cleanPlayerBullets();
+            EntityManager::cleanPlayerBullets();
             EntityManager::cleanParticles();
             EndDrawing();
 
             if (player.getDead())
             {
-                Sprite::cleanTextures();
-                break;
+                static int countDown{ 60 };
+
+                --countDown; 
+                if (countDown <= 0)
+                {
+                    Sprite::cleanTextures();
+                    break;
+                }
             }
         }
     }
 
-    youLose();
+    youLose(score);
 
     CloseWindow();
 }

@@ -73,9 +73,9 @@ void EntityManager::spawnPlayerBullet(Vec pos, float angle)
     s_playerBullets.push_back(new Bullet{pos, angle, 0, 6, BLUE, true, Sprite::Type::bullet});
 }
 
-void EntityManager::spawnParticle(Vec pos, float angle, bool goingRight, float speed)
+void EntityManager::spawnParticle(Vec pos, float angle, bool goingRight, float speed, Color color)
 {
-    s_particles.push_back(new Entity{pos, Vec{6, 6}, angle, 0, speed, BROWN, goingRight, Sprite::Type::particle});
+    s_particles.push_back(new Entity{pos, Vec{30, 30}, angle, 0, speed, color, goingRight, Sprite::Type::particle});
 }
 
 void EntityManager::cleanParticles()

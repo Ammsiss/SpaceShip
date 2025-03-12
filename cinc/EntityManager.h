@@ -1,6 +1,7 @@
 #ifndef ENTITYMANAGER_H
 #define ENTITYMANAGER_H
 
+#include <raylib.h>
 #include <deque>
 
 #include "../cinc/Entity.h"
@@ -14,7 +15,7 @@ class EntityManager
     static void spawnExploder();
     static void spawnBullet(Vec pos, float angle);
     static void spawnPlayerBullet(Vec pos, float angle);
-    static void spawnParticle(Vec pos, float angle, bool goingRight, float speed);
+    static void spawnParticle(Vec pos, float angle, bool goingRight, float speed, Color color);
     static void cleanParticles();
     static void cleanEntities(int& score);
     static void cleanPlayerBullets();

@@ -12,7 +12,7 @@ class Exploder : public Entity
 public:
     Exploder(Vec center, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType);
 
-    void takeHit();
+    void takeHit(Entity& entity);
     void explode();
 
 private:

@@ -9,6 +9,7 @@
 
 #include "../inc/Aggregates.h"
 #include "../inc/Constants.h"
+#include "../inc/Helper.h"
 
 Player::Player(Vec center, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType)
     : Entity{center, Vec{Constants::playerSize, Constants::playerSize}, angle, turnSpeed, speed, color, goingRight, textureType}
@@ -26,6 +27,9 @@ void Player::updateDirection()
 
 void Player::timeToShoot()
 {
+    if (m_dead)
+        return;
+
     static double lastTime{GetTime()};
 
     double currentTime{GetTime()};
@@ -39,5 +43,8 @@ void Player::timeToShoot()
 void Player::offScreen()
 {
     if (m_tl.x <= 0 || m_tl.y <= 0 || m_br.x >= Constants::windowSize || m_br.y >= Constants::windowSize)
+    {
         m_dead = true;
+        Helper::spawnParticles(GREEN, m_center);
+    }
 }

@@ -1,0 +1,37 @@
+let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-1 siso=-1
+argglobal
+if bufexists(fnamemodify("~/Projects/SpaceShip/src/main.cpp", ":p")) | buffer ~/Projects/SpaceShip/src/main.cpp | else | edit ~/Projects/SpaceShip/src/main.cpp | endif
+if &buftype ==# 'terminal'
+  silent file ~/Projects/SpaceShip/src/main.cpp
+endif
+setlocal fdm=expr
+setlocal fde=nvim_treesitter#foldexpr()
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=999
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+14
+normal! zo
+14
+normal! zc
+70
+normal! zo
+70
+normal! zc
+87
+normal! zo
+87
+normal! zc
+let s:l = 125 - ((124 * winheight(0) + 52) / 104)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 125
+normal! 0
+let &g:so = s:so_save | let &g:siso = s:siso_save
+set hlsearch
+nohlsearch
+doautoall SessionLoadPost
+" vim: set ft=vim :
