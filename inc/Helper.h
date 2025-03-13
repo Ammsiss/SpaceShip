@@ -39,7 +39,7 @@ namespace Helper
             if (angle >= 90 && angle <= 270)
                 goingLeft = true;
 
-            EntityManager::spawnParticle(center, static_cast<float>(angle), !goingLeft, Random::getReal(1.0f, 3.0f), color);
+            EntityManager::spawnParticle(center, static_cast<float>(angle), !goingLeft, Random::getReal(1.0f, 3.0f), color, 8);
         }
     }
 

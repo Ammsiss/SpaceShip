@@ -134,43 +134,21 @@ int main()
         Sprite::loadTextures();
         Player player{Vec{500, 500}, 0, 3, 3, BLUE, true, Sprite::Type::player};
 
+        InitAudioDevice();
+        Sound shoot{ LoadSound("/Users/ammsiss/Projects/SpaceShip/sounds/shoot.wav") };
+        Sound explosion{ LoadSound( "/Users/ammsiss/Projects/SpaceShip/sounds/explosion.wav") };
+        SetSoundVolume(shoot, 0.50f);
+        SetSoundVolume(explosion, 0.50f);
+
         while (!WindowShouldClose())
         {
             BeginDrawing();
             ClearBackground(BLACK);
 
+
             const char* scoreText{ TextFormat("SCORE: %d", score) };
             int length{ MeasureText(scoreText, 30) };
             DrawText(scoreText, (Constants::windowSize / 2) - (length / 2), 10, 30, RED);
-
-            player.updateEntity();
-            player.updateDirection();
-            player.timeToShoot();
-
-            EntityManager::spawnEnemy();
-            EntityManager::spawnMeteor();
-            EntityManager::spawnExploder();
-
-            for (auto &entity : EntityManager::getEntities())
-            {
-                entity->updateEntity();
-                player.checkCollision(*entity);
-                Enemy *enemy{dynamic_cast<Enemy*>(entity)};
-                if (enemy)
-                {
-                    enemy->timeToShoot(player.getCenter());
-                }
-
-                for (auto &bullet : EntityManager::getPlayerBullets())
-                {
-                    bullet->checkCollision(*entity);
-                }
-            }
-
-            for (auto &bullet : EntityManager::getPlayerBullets())
-            {
-                bullet->updateEntity();
-            }
 
             for (auto &particle : EntityManager::getParticles())
             {
@@ -179,6 +157,34 @@ int main()
                 particle->offScreen();
             }
 
+            player.updateEntity();
+            player.updateDirection();
+            player.timeToShoot(shoot);
+
+            EntityManager::spawnEnemy();
+            EntityManager::spawnMeteor();
+            EntityManager::spawnExploder();
+
+            for (auto &entity : EntityManager::getEntities())
+            {
+                entity->updateEntity();
+                player.checkCollision(*entity, explosion);
+                Enemy *enemy{dynamic_cast<Enemy*>(entity)};
+                if (enemy)
+                {
+                    enemy->timeToShoot(player.getCenter());
+                }
+
+                for (auto &bullet : EntityManager::getPlayerBullets())
+                {
+                    bullet->checkCollision(*entity, explosion);
+                }
+            }
+
+            for (auto &bullet : EntityManager::getPlayerBullets())
+            {
+                bullet->updateEntity();
+            }
 
             printDebug();
             DrawText(TextFormat("Particles: %d", EntityManager::getParticles().size()), 10, 90, 15, RED);

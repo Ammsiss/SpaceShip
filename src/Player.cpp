@@ -25,7 +25,7 @@ void Player::updateDirection()
         m_angle += m_turnSpeed;
 }
 
-void Player::timeToShoot()
+void Player::timeToShoot(Sound& sound)
 {
     if (m_dead)
         return;
@@ -35,6 +35,7 @@ void Player::timeToShoot()
     double currentTime{GetTime()};
     if (currentTime - lastTime >= 0.35)
     {
+        PlaySound(sound);
         EntityManager::spawnPlayerBullet(m_center, m_angle);
         lastTime = currentTime;
     }

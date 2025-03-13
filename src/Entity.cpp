@@ -5,10 +5,11 @@
 #include "../cinc/Enemy.h"
 #include "../cinc/Exploder.h"
 #include "../cinc/Sprite.h"
+#include "cinc/Bullet.h"
+#include "cinc/Player.h"
 
 #include "../inc/Aggregates.h"
 #include "../inc/Helper.h"
-#include "cinc/Player.h"
 
 Entity::Entity(Vec center, Vec dim, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType)
     : m_center{center}, m_dim{dim}, m_angle{angle}, m_turnSpeed{turnSpeed}, m_speed{speed}, m_color{color}, m_goingRight{ goingRight }, m_textureType{ textureType }
@@ -23,8 +24,22 @@ void Entity::move()
     updateHitBox();
 }
 
-void Entity::render() const
+void Entity::render()
 {
+    if (dynamic_cast<Bullet*>(this))
+    {
+        float angle{ Random::getReal((m_angle - 180) - 20, (m_angle - 180) + 20) };
+        Vec center{ Random::getReal(m_center.x - 5, m_center.x + 5), Random::getReal(m_center.y - 5, m_center.y + 5)};
+
+        EntityManager::spawnParticle(center, angle, true, 1, WHITE);
+    }
+    else if (!dynamic_cast<Exploder*>(this) && !dynamic_cast<Player*>(this))
+    {
+        float angle{ Random::getReal((m_angle - 180) - 20, (m_angle - 180) + 20) };
+        Vec center{ Random::getReal(m_center.x - 15, m_center.x + 15), Random::getReal(m_center.y - 15, m_center.y + 15)};
+        EntityManager::spawnParticle(center, angle, true, 2, DARKBROWN);
+    }
+
     DrawTexture(Sprite::getTexture(m_textureType), Helper::toI(m_tl.x), Helper::toI(m_tl.y), WHITE);
 }
 
@@ -40,10 +55,10 @@ void Entity::renderParticle()
         m_particleTimer = currentTime;
     }
 
-    DrawRectangle(Helper::toI(m_center.x), Helper::toI(m_center.y), 8, 8, Fade(m_color, alpha));
+    DrawRectangle(Helper::toI(m_center.x), Helper::toI(m_center.y), Helper::toI(m_dim.x), Helper::toI(m_dim.y), Fade(m_color, alpha));
 }
 
-void Entity::checkCollision(Entity& entity)
+void Entity::checkCollision(Entity& entity, Sound& sound)
 {
     if (m_dead)
         return;
@@ -51,6 +66,8 @@ void Entity::checkCollision(Entity& entity)
     if ((std::fmax(entity.m_tl.x, m_tl.x) <= std::fmin(entity.m_br.x, m_br.x) &&
          std::fmax(entity.m_tl.y, m_tl.y) <= std::fmin(entity.m_br.y, m_br.y)))
     {
+        PlaySound(sound);
+
         bool none{ true };
 
         Exploder* exploder{ dynamic_cast<Exploder*>(&entity) };

@@ -15,7 +15,7 @@ class EntityManager
     static void spawnExploder();
     static void spawnBullet(Vec pos, float angle);
     static void spawnPlayerBullet(Vec pos, float angle);
-    static void spawnParticle(Vec pos, float angle, bool goingRight, float speed, Color color);
+    static void spawnParticle(Vec pos, float angle, bool goingRight, float speed, Color color, float size = 3);
     static void cleanParticles();
     static void cleanEntities(int& score);
     static void cleanPlayerBullets();

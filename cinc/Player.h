@@ -13,7 +13,7 @@ class Player : public Entity
     Player(Vec center, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType);
 
     void updateDirection();
-    void timeToShoot();
+    void timeToShoot(Sound& sound);
     void offScreen() override;
 
   private:

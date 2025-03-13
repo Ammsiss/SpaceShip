@@ -15,9 +15,9 @@ class Entity
     Entity(Vec center, Vec dim, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType);
 
     void move();
-    void render() const;
+    void render();
     void renderParticle();
-    void checkCollision(Entity &entity);
+    void checkCollision(Entity &entity, Sound& sound);
     virtual void offScreen();
     void updateEntity();
 
