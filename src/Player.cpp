@@ -49,3 +49,15 @@ void Player::offScreen()
         Helper::spawnParticles(GREEN, m_center);
     }
 }
+
+void Player::render()
+{
+    DrawTexture(Sprite::getTexture(m_textureType), Helper::toI(m_tl.x), Helper::toI(m_tl.y), WHITE);
+}
+
+void Player::collisionLogic()
+{
+    Helper::spawnParticles(GREEN, m_center);
+
+    m_dead = true;
+}

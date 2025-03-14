@@ -5,6 +5,7 @@ namespace Constants
 {
     constexpr int playerSize{50};
     constexpr int exploderSize{80};
+    constexpr int meteorSize{25};
     constexpr int enemySize{50};
     constexpr int bulletSize{10};
     constexpr int windowSize{1000};

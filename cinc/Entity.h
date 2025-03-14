@@ -11,25 +11,25 @@ class Entity
   public:
     Entity() = default;
     virtual ~Entity() = default;
-
     Entity(Vec center, Vec dim, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType);
 
+    virtual void collisionLogic();
+
     void move();
-    void render();
+    virtual void render();
     void renderParticle();
     void checkCollision(Entity &entity, Sound& sound);
     virtual void offScreen();
     void updateEntity();
 
-    Vec getCenter() const
-    {
-        return m_center;
-    }
+    bool getDead() const { return m_dead; }
+    void setDead(bool dead) { m_dead = dead; }
 
-    bool getDead() const;
-    void setDead(bool dead);
+    Vec getCenter() const { return m_center; }
+    void setCenter(Vec center) { m_center = center; }
 
-    bool getKillStatus() const;
+    bool getKillStatus() const { return m_killedByPlayer; }
+    void setKillStatus(bool killStatus) { m_killedByPlayer = killStatus; }
 
   protected:
     Vec m_center{};

@@ -15,6 +15,8 @@ class Player : public Entity
     void updateDirection();
     void timeToShoot(Sound& sound);
     void offScreen() override;
+    void render() override;
+    void collisionLogic() override;
 
   private:
 };

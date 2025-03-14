@@ -17,6 +17,8 @@ class Enemy : public Entity
     float getAngle(Vec playerCenter);
     void timeToShoot(Vec playerCenter);
     void offScreen() override;
+    void render() override;
+    void collisionLogic() override;
 
   private:
     double m_lastTime{};

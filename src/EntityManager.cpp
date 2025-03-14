@@ -4,6 +4,7 @@
 #include "../cinc/Entity.h"
 #include "../cinc/Bullet.h"
 #include "../cinc/Sprite.h"
+#include "../cinc/Meteor.h"
 
 #include "../inc/Random.h"
 
@@ -40,7 +41,7 @@ void EntityManager::spawnMeteor()
     if (currentTime - lastTime >= spawnTime)
     {
         lastTime = currentTime;
-        s_entities.push_back(new Entity{Vec{-200, Random::getReal(100.0f, 900.0f)}, Vec{25, 25}, 0, 0, 3, BROWN, true, Sprite::Type::meteor});
+        s_entities.push_back(new Meteor{Vec{-200, Random::getReal(100.0f, 900.0f)}, 0, 0, 3, BROWN, true, Sprite::Type::meteor});
 
         if (spawnTime >= 0.50)
             spawnTime -= 0.025;
@@ -114,7 +115,7 @@ void EntityManager::cleanEntities(int& score)
                 {
                     score += 10;
                 }
-                else
+                else if (dynamic_cast<Meteor*>(*it))
                 {
                     score += 50;
                 }

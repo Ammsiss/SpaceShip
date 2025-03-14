@@ -2,11 +2,7 @@
 #include <raylib.h>
 
 #include "../cinc/Entity.h"
-#include "../cinc/Enemy.h"
-#include "../cinc/Exploder.h"
 #include "../cinc/Sprite.h"
-#include "cinc/Bullet.h"
-#include "cinc/Player.h"
 
 #include "../inc/Aggregates.h"
 #include "../inc/Helper.h"
@@ -26,19 +22,9 @@ void Entity::move()
 
 void Entity::render()
 {
-    if (dynamic_cast<Bullet*>(this))
-    {
-        float angle{ Random::getReal((m_angle - 180) - 20, (m_angle - 180) + 20) };
-        Vec center{ Random::getReal(m_center.x - 5, m_center.x + 5), Random::getReal(m_center.y - 5, m_center.y + 5)};
-
-        EntityManager::spawnParticle(center, angle, true, 1, WHITE);
-    }
-    else if (!dynamic_cast<Exploder*>(this) && !dynamic_cast<Player*>(this))
-    {
-        float angle{ Random::getReal((m_angle - 180) - 20, (m_angle - 180) + 20) };
-        Vec center{ Random::getReal(m_center.x - 15, m_center.x + 15), Random::getReal(m_center.y - 15, m_center.y + 15)};
-        EntityManager::spawnParticle(center, angle, true, 2, DARKBROWN);
-    }
+    float angle{ Random::getReal((m_angle - 180) - 20, (m_angle - 180) + 20) };
+    Vec center{Random::getReal(m_center.x - 15, m_center.x + 15), Random::getReal(m_center.y - 15, m_center.y + 15)};
+    EntityManager::spawnParticle(center, angle, true, 2, DARKBROWN);
 
     DrawTexture(Sprite::getTexture(m_textureType), Helper::toI(m_tl.x), Helper::toI(m_tl.y), WHITE);
 }
@@ -58,6 +44,14 @@ void Entity::renderParticle()
     DrawRectangle(Helper::toI(m_center.x), Helper::toI(m_center.y), Helper::toI(m_dim.x), Helper::toI(m_dim.y), Fade(m_color, alpha));
 }
 
+void Entity::collisionLogic()
+{
+    Helper::spawnParticles(GRAY, m_center);
+
+    m_dead = true;
+    m_killedByPlayer = true;
+}
+
 void Entity::checkCollision(Entity& entity, Sound& sound)
 {
     if (m_dead)
@@ -68,40 +62,8 @@ void Entity::checkCollision(Entity& entity, Sound& sound)
     {
         PlaySound(sound);
 
-        bool none{ true };
-
-        Exploder* exploder{ dynamic_cast<Exploder*>(&entity) };
-        if (exploder)
-        {
-            exploder->takeHit(*this);
-            none = false;
-        }
-
-        Enemy* enemy{ dynamic_cast<Enemy*>(&entity) };
-        if (enemy)
-        {
-            Helper::spawnParticles(RED, entity.m_center);
-
-            none = false;
-            m_dead = true;
-            entity.m_dead = true;
-            entity.m_killedByPlayer = true;
-        }
-
-        Player* player{ dynamic_cast<Player*>(this) };
-        if (player)
-        {
-            Helper::spawnParticles(GREEN, m_center);
-        }
-
-        if (none)
-        {
-            Helper::spawnParticles(GRAY, entity.m_center);
-
-            m_dead = true;
-            entity.m_dead = true;
-            entity.m_killedByPlayer = true;
-        }
+        this->collisionLogic();
+        entity.collisionLogic();
     }
 }
 
@@ -117,20 +79,6 @@ void Entity::offScreen()
         if (m_br.x < 0)
             m_dead = true;
     }
-}
-
-bool Entity::getDead() const
-{
-    return m_dead;
-}
-void Entity::setDead(bool dead)
-{
-    m_dead = dead;
-}
-
-bool Entity::getKillStatus() const
-{
-    return m_killedByPlayer;
 }
 
 void Entity::updateHitBox()

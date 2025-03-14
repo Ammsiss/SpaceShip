@@ -13,17 +13,15 @@ Exploder::Exploder(Vec center, float angle, float turnSpeed, float speed, Color 
     updateHitBox();
 }
 
-void Exploder::takeHit(Entity& entity)
+void Exploder::takeHit()
 {
     ++m_hitCount;
 
     if (m_hitCount >= 2)
     {
         explode();
-        entity.setDead(true);
         m_killedByPlayer = true;
         m_dead = true;
-
         Helper::spawnParticles(PURPLE, m_center);
     }
 }
@@ -34,4 +32,18 @@ void Exploder::explode()
     EntityManager::spawnMeteorNow(m_center, 135, false);
     EntityManager::spawnMeteorNow(m_center, 225, false);
     EntityManager::spawnMeteorNow(m_center, 315, true);
+}
+
+void Exploder::render()
+{
+    float angle{ Random::getReal((m_angle - 180) - 20, (m_angle - 180) + 20) };
+    Vec center{m_center.x - 30, Random::getReal(m_center.y + 30, m_center.y - 30)};
+    EntityManager::spawnParticle(center, angle, true, 2, PURPLE);
+
+    DrawTexture(Sprite::getTexture(m_textureType), Helper::toI(m_tl.x), Helper::toI(m_tl.y), WHITE);
+}
+
+void Exploder::collisionLogic()
+{
+    takeHit();
 }

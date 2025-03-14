@@ -12,8 +12,10 @@ class Exploder : public Entity
 public:
     Exploder(Vec center, float angle, float turnSpeed, float speed, Color color, bool goingRight, Sprite::Type textureType);
 
-    void takeHit(Entity& entity);
+    void takeHit();
     void explode();
+    void render() override;
+    void collisionLogic() override;
 
 private:
     int m_hitCount{ 0 };

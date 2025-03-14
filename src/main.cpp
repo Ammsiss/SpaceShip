@@ -188,7 +188,7 @@ int main()
 
             printDebug();
             DrawText(TextFormat("Particles: %d", EntityManager::getParticles().size()), 10, 90, 15, RED);
-            
+
             EntityManager::cleanEntities(score);
             EntityManager::cleanPlayerBullets();
             EntityManager::cleanParticles();
