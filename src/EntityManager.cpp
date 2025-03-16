@@ -5,8 +5,26 @@
 #include "../cinc/Bullet.h"
 #include "../cinc/Sprite.h"
 #include "../cinc/Meteor.h"
+#include "../cinc/Chaser.h"
 
 #include "../inc/Random.h"
+
+void EntityManager::spawnChaser()
+{
+    static double lastTime{GetTime()};
+    double currentTime{GetTime()};
+
+    static double spawnTime{ 1 };
+    if (currentTime - lastTime >= spawnTime)
+    {
+        lastTime = currentTime;
+        s_entities.push_back(new Chaser{Vec{0, Random::getReal(200.0f, 800.0f)}, 0, 0, 3, RED, true, Sprite::Type::chaser
+        });
+
+        if (spawnTime >= 2)
+            spawnTime -= 0.25;
+    }
+}
 
 void EntityManager::spawnEnemy()
 {
@@ -76,7 +94,7 @@ void EntityManager::spawnPlayerBullet(Vec pos, float angle)
 
 void EntityManager::spawnParticle(Vec pos, float angle, bool goingRight, float speed, Color color, float size)
 {
-    s_particles.push_back(new Entity{pos, Vec{ size, size }, angle, 0, speed, color, goingRight, Sprite::Type::particle});
+    s_particles.push_back(new Entity{pos, Vec{ size, size }, angle, 0, speed, color, goingRight, Sprite::Type::max_type});
 }
 
 void EntityManager::cleanParticles()

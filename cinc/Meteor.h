@@ -8,6 +8,7 @@ public:
     void render() override;
     void offScreen() override;
     void collisionLogic() override;
+    void move() override;
 
 private:
 };

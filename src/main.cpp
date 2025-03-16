@@ -11,6 +11,7 @@
 #include "./inc/Helper.h"
 #include "cinc/Bullet.h"
 #include "cinc/Exploder.h"
+#include "cinc/Chaser.h"
 
 bool menu()
 {
@@ -94,6 +95,7 @@ void printDebug()
     int meteorCount{ 0 };
     int exploderCount{ 0 };
     int enemyBulletCount{ 0 };
+    int chaserCount{ 0 };
 
     for (const auto& entity : EntityManager::getEntities())
     { 
@@ -109,6 +111,10 @@ void printDebug()
         {
             ++enemyBulletCount;
         }
+        else if (dynamic_cast<Chaser*>(entity))
+        {
+            ++chaserCount;
+        }
         else
         {
             ++meteorCount;
@@ -119,12 +125,14 @@ void printDebug()
     DrawText(TextFormat("E Bullets: %d", enemyBulletCount), 10, 30, 15, RED);
     DrawText(TextFormat("Meteors: %d", meteorCount), 10, 50, 15, RED);
     DrawText(TextFormat("Exploders: %d", exploderCount), 10, 70, 15, RED);
+    DrawText(TextFormat("Chasers: %d", chaserCount), 10, 110, 15, RED);
 }
 
 int main()
 {
     InitWindow(1000, 1000, "Space Game");
     SetTargetFPS(60);
+
 
     bool play{menu()};
 
@@ -145,7 +153,6 @@ int main()
             BeginDrawing();
             ClearBackground(BLACK);
 
-
             const char* scoreText{ TextFormat("SCORE: %d", score) };
             int length{ MeasureText(scoreText, 30) };
             DrawText(scoreText, (Constants::windowSize / 2) - (length / 2), 10, 30, RED);
@@ -157,9 +164,15 @@ int main()
                 particle->offScreen();
             }
 
+            for (auto &bullet : EntityManager::getPlayerBullets())
+            {
+                bullet->updateEntity();
+            }
+
             player.updateEntity();
             player.updateDirection();
             player.timeToShoot(shoot);
+            player.updateLocation();
 
             EntityManager::spawnEnemy();
             EntityManager::spawnMeteor();
@@ -179,11 +192,6 @@ int main()
                 {
                     bullet->checkCollision(*entity, explosion);
                 }
-            }
-
-            for (auto &bullet : EntityManager::getPlayerBullets())
-            {
-                bullet->updateEntity();
             }
 
             printDebug();

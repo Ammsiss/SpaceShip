@@ -6,6 +6,8 @@
 #include "../inc/Aggregates.h"
 #include "../cinc/Sprite.h"
 
+class Player;
+
 class Entity
 {
   public:
@@ -15,7 +17,7 @@ class Entity
 
     virtual void collisionLogic();
 
-    void move();
+    virtual void move();
     virtual void render();
     void renderParticle();
     void checkCollision(Entity &entity, Sound& sound);

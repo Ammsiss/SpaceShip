@@ -9,6 +9,7 @@
 class EntityManager
 {
   public:
+    static void spawnChaser();
     static void spawnEnemy();
     static void spawnMeteorNow(Vec position, float angle, bool goingRight);
     static void spawnMeteor();

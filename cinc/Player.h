@@ -4,6 +4,8 @@
 #include "../cinc/Entity.h"
 #include "../cinc/Sprite.h"
 
+inline Vec center{};
+
 class Enemy;
 
 class Player : public Entity
@@ -17,6 +19,11 @@ class Player : public Entity
     void offScreen() override;
     void render() override;
     void collisionLogic() override;
+
+    void updateLocation()
+    {
+        center = m_center;
+    }
 
   private:
 };

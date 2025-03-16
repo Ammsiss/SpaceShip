@@ -18,7 +18,9 @@ void Meteor::render()
     Vec center{Random::getReal(m_center.x - 15, m_center.x + 15), Random::getReal(m_center.y - 15, m_center.y + 15)};
     EntityManager::spawnParticle(center, angle, true, 2, DARKBROWN);
 
-    DrawTexture(Sprite::getTexture(m_textureType), Helper::toI(m_tl.x), Helper::toI(m_tl.y), WHITE);
+    m_angle += 0.3f;
+
+    DrawTexturePro(Sprite::getTexture(m_textureType), { 0, 0, 25, 25 }, { m_center.x, m_center.y, 25, 25 }, { 12.5, 12.5 }, m_angle, WHITE);
 }
 
 void Meteor::offScreen()
@@ -32,4 +34,13 @@ void Meteor::collisionLogic()
     Helper::spawnParticles(DARKBROWN, m_center);
     m_dead = true;
     m_killedByPlayer = true;
+}
+
+
+void Meteor::move()
+{
+    m_center.x += (std::cos(Helper::toRad(0)) * m_speed);
+    m_center.y += (std::sin(Helper::toRad(0)) * m_speed);
+
+    updateHitBox();
 }
