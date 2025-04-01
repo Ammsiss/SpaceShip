@@ -177,6 +177,7 @@ int main()
             EntityManager::spawnEnemy();
             EntityManager::spawnMeteor();
             EntityManager::spawnExploder();
+            EntityManager::spawnChaser();
 
             for (auto &entity : EntityManager::getEntities())
             {

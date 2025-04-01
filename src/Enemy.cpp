@@ -62,3 +62,26 @@ void Enemy::collisionLogic()
     m_dead = true;
     m_killedByPlayer = true;
 }
+
+void test()
+{
+    int* s_ptr_a{ new int{ 5 } };
+    delete s_ptr_a;
+
+    int* s_ptr_m{ static_cast<int*>(operator new(sizeof(int))) };
+    operator delete(s_ptr_m);
+
+    int* m_ptr_a{ new int[]{ 5 } };
+    delete[] m_ptr_a;
+
+    int* m_ptr_m{ static_cast<int*>(operator new(sizeof(int) * 2)) };
+    // for ()
+    // {
+    //     m_ptr_m->constructor()
+    // }
+    // for ()
+    // {
+    //      m_ptr_m->desctructor()
+    //  }
+    operator delete(m_ptr_m);
+}

@@ -14,11 +14,11 @@ void EntityManager::spawnChaser()
     static double lastTime{GetTime()};
     double currentTime{GetTime()};
 
-    static double spawnTime{ 1 };
+    static double spawnTime{ 30 };
     if (currentTime - lastTime >= spawnTime)
     {
         lastTime = currentTime;
-        s_entities.push_back(new Chaser{Vec{0, Random::getReal(200.0f, 800.0f)}, 0, 0, 3, RED, true, Sprite::Type::chaser
+        s_entities.push_back(new Chaser{Vec{0, Random::getReal(200.0f, 800.0f)}, 0, 0, 1.5, RED, true, Sprite::Type::chaser
         });
 
         if (spawnTime >= 2)
@@ -71,14 +71,14 @@ void EntityManager::spawnExploder()
     static double lastTime{ GetTime() };
     double currentTime{ GetTime() };
 
-    static double spawnTime{ 30 };
+    static double spawnTime{ 15 };
     if (currentTime - lastTime >= spawnTime)
     {
         lastTime = currentTime;
         s_entities.push_back(new Exploder{ Vec{-200, Random::getReal(100.0f, 900.0f)}, 0, 0, 2, PURPLE, true, Sprite::Type::exploder});
 
-        if (spawnTime >= 6)
-            spawnTime -= 4;
+        if (spawnTime >= 10)
+            spawnTime -= 1;
     }
 }
 
